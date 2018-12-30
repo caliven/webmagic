@@ -18,18 +18,18 @@ public class JsonPathSelectorTest {
             "      { \"category\": \"reference\",\n" +
             "        \"author\": \"Nigel Rees\",\n" +
             "        \"title\": \"Sayings of the Century\",\n" +
-            "        \"cnyPrice\": 8.95\n" +
+            "        \"price\": 8.95\n" +
             "      },\n" +
             "      { \"category\": \"fiction\",\n" +
             "        \"author\": \"Evelyn Waugh\",\n" +
             "        \"title\": \"Sword of Honour\",\n" +
-            "        \"cnyPrice\": 12.99,\n" +
+            "        \"price\": 12.99,\n" +
             "        \"isbn\": \"0-553-21311-3\"\n" +
             "      }\n" +
             "    ],\n" +
             "    \"bicycle\": {\n" +
             "      \"color\": \"red\",\n" +
-            "      \"cnyPrice\": 19.95\n" +
+            "      \"price\": 19.95\n" +
             "    }\n" +
             "  }\n" +
             "}";
@@ -49,7 +49,7 @@ public class JsonPathSelectorTest {
         jsonPathSelector = new JsonPathSelector("$.store.book[?(@.category == 'reference')]");
         select = jsonPathSelector.select(text);
         JSONObject object1= JSON.parseObject(select);
-        JSONObject object2=JSON.parseObject("{\"author\":\"Nigel Rees\",\"title\":\"Sayings of the Century\",\"category\":\"reference\",\"cnyPrice\":8.95}");
+        JSONObject object2=JSON.parseObject("{\"author\":\"Nigel Rees\",\"title\":\"Sayings of the Century\",\"category\":\"reference\",\"price\":8.95}");
         assertThat(object1).isEqualTo(object2);
     }
 

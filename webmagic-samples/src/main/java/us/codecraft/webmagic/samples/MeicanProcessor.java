@@ -23,7 +23,7 @@ public class MeicanProcessor implements PageProcessor {
         page.addTargetRequests(requests);
         page.addTargetRequests(page.getHtml().links().regex("(.*/restaurant/[^#]+)").all());
         page.putField("items", page.getHtml().xpath("//ul[@class=\"dishes menu_dishes\"]/li/span[@class=\"name\"]/text()"));
-        page.putField("prices", page.getHtml().xpath("//ul[@class=\"dishes menu_dishes\"]/li/span[@class=\"price_outer\"]/span[@class=\"cnyPrice\"]/text()"));
+        page.putField("prices", page.getHtml().xpath("//ul[@class=\"dishes menu_dishes\"]/li/span[@class=\"price_outer\"]/span[@class=\"price\"]/text()"));
     }
 
     @Override
