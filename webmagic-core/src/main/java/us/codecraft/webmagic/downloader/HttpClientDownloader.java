@@ -30,28 +30,28 @@ import java.util.Map;
  * @since 0.1.0
  */
 public class HttpClientDownloader extends AbstractDownloader {
-
-    private Logger logger = LoggerFactory.getLogger(getClass());
-
-    private final Map<String, CloseableHttpClient> httpClients = new HashMap<String, CloseableHttpClient>();
-
-    private HttpClientGenerator httpClientGenerator = new HttpClientGenerator();
-
-    private HttpUriRequestConverter httpUriRequestConverter = new HttpUriRequestConverter();
     
-    private ProxyProvider proxyProvider;
-
+    private Logger logger = LoggerFactory.getLogger(getClass());
+    
+    private final Map<String, CloseableHttpClient> httpClients = new HashMap<String, CloseableHttpClient>();
+    
+    private HttpClientGenerator httpClientGenerator = new HttpClientGenerator();
+    
+    public HttpUriRequestConverter httpUriRequestConverter = new HttpUriRequestConverter();
+    
+    public ProxyProvider proxyProvider;
+    
     private boolean responseHeader = true;
-
+    
     public void setHttpUriRequestConverter(HttpUriRequestConverter httpUriRequestConverter) {
         this.httpUriRequestConverter = httpUriRequestConverter;
     }
-
+    
     public void setProxyProvider(ProxyProvider proxyProvider) {
         this.proxyProvider = proxyProvider;
     }
-
-    private CloseableHttpClient getHttpClient(Site site) {
+    
+    public CloseableHttpClient getHttpClient(Site site) {
         if (site == null) {
             return httpClientGenerator.getClient(null);
         }
@@ -68,7 +68,7 @@ public class HttpClientDownloader extends AbstractDownloader {
         }
         return httpClient;
     }
-
+    
     @Override
     public Page download(Request request, Task task) {
         if (task == null || task.getSite() == null) {
@@ -87,6 +87,9 @@ public class HttpClientDownloader extends AbstractDownloader {
             return page;
         } catch (IOException e) {
             logger.warn("download page {} error", request.getUrl(), e);
+            if (proxy != null) {
+                request.putExtra("proxy", proxy);
+            }
             onError(request);
             return page;
         } finally {
@@ -99,18 +102,18 @@ public class HttpClientDownloader extends AbstractDownloader {
             }
         }
     }
-
+    
     @Override
     public void setThread(int thread) {
         httpClientGenerator.setPoolSize(thread);
     }
-
+    
     protected Page handleResponse(Request request, String charset, HttpResponse httpResponse, Task task) throws IOException {
         byte[] bytes = IOUtils.toByteArray(httpResponse.getEntity().getContent());
         String contentType = httpResponse.getEntity().getContentType() == null ? "" : httpResponse.getEntity().getContentType().getValue();
         Page page = new Page();
         page.setBytes(bytes);
-        if (!request.isBinaryContent()){
+        if (!request.isBinaryContent()) {
             if (charset == null) {
                 charset = getHtmlCharset(contentType, bytes);
             }
@@ -126,7 +129,7 @@ public class HttpClientDownloader extends AbstractDownloader {
         }
         return page;
     }
-
+    
     private String getHtmlCharset(String contentType, byte[] contentBytes) throws IOException {
         String charset = CharsetUtils.detectCharset(contentType, contentBytes);
         if (charset == null) {
